@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+  default:
+    desc: Install with defaults (VM swapped keys, either Option key)
+    cmds:
+      - task: install
+
+  install:
+    desc: Install for a VM on a Mac (top-left key swapped)
+    cmds:
+      - ./install.sh --variant swapped --alt {{.ALT | default "any"}}
+
+  install:native:
+    desc: Install for a keyboard where keys are not swapped
+    cmds:
+      - ./install.sh --variant basic --alt {{.ALT | default "any"}}
+
+  check:
+    desc: Check that the layout compiles (needs libxkbcommon-tools)
+    cmds:
+      - xkbcli compile-keymap --include "$PWD" --include-defaults --layout macbe --variant swapped > /dev/null && echo "swapped OK"
+      - xkbcli compile-keymap --include "$PWD" --include-defaults --layout macbe > /dev/null && echo "basic OK"
+
+  test:
+    desc: Open wev to see what each key produces
+    cmds:
+      - wev
+
+  uninstall:
+    desc: Remove the layout and go back to standard Belgian
+    cmds:
+      - ./install.sh --uninstall
